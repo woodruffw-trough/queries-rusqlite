@@ -7,7 +7,7 @@ proc-macro2 = "1"
 queries-rusqlite-macros = { version = "=0.1.0", path = "crates/queries-rusqlite-macros" }
 quote = "1"
 rusqlite = { version = "0.40.2", default-features = false }
-syn = { version = "2", default-features = false, features = ["full", "parsing", "printing", "proc-macro", "clone-impls", "derive"] }
+syn = { version = "3", default-features = false, features = ["full", "parsing", "printing", "proc-macro", "clone-impls", "derive"] }
 
 [workspace.lints.rust]
 elided_lifetimes_in_paths = "deny"
