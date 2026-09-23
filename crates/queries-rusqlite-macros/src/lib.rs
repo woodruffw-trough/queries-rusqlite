@@ -150,7 +150,7 @@ fn expand_queries(attributes: Tokens, input: Tokens) -> syn::Result<Tokens> {
     let path = crate_path(attributes)?;
     let item: ItemTrait = syn::parse2(input)?;
     if item.unsafety.is_some()
-        || item.auto_token.is_some()
+        || item.modifiers.require_empty().is_err()
         || !item.generics.params.is_empty()
         || item.generics.where_clause.is_some()
         || !item.supertraits.is_empty()
@@ -276,7 +276,7 @@ fn expand_method(method: &TraitItemFn, path: &Path) -> syn::Result<Tokens> {
     let signature = &method.sig;
     if signature.constness.is_some()
         || signature.asyncness.is_some()
-        || signature.unsafety.is_some()
+        || !matches!(signature.safety, syn::Safety::Default)
         || signature.abi.is_some()
         || signature.variadic.is_some()
         || !signature.generics.params.is_empty()
