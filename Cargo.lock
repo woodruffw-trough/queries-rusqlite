@@ -47,7 +47,7 @@ dependencies = [
 
 [[package]]
 name = "queries-rusqlite"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "queries-rusqlite-macros",
  "rusqlite",
@@ -55,7 +55,7 @@ dependencies = [
 
 [[package]]
 name = "queries-rusqlite-macros"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "proc-macro2",
  "quote",

@@ -1,11 +1,11 @@
 [package]
 name = "queries-rusqlite-macros"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.95"
 description = "Macros for queries-rusqlite"
 license = "BSD-3-Clause"
-repository = "https://github.com/woodruffw-bot/queries-rusqlite"
+repository = "https://github.com/woodruffw-trough/queries-rusqlite"
 
 [lib]
 proc-macro = true
