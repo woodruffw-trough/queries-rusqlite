@@ -1,8 +1,12 @@
 name: Publish
 
 on:
-  push:
-    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag, such as v0.2.0
+        required: true
+        type: string
 
 permissions: {}
 
@@ -18,13 +22,15 @@ jobs:
       name: crates-io
       url: https://crates.io/crates/queries-rusqlite
     permissions:
-      contents: read
+      contents: write # Create release tags.
       id-token: write # Authenticate with crates.io.
     env:
       RUSTUP_TOOLCHAIN: "1.95.0"
+      RELEASE_TAG: ${{ inputs.tag }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - run: |
           sudo apt-get update
@@ -32,11 +38,29 @@ jobs:
       - run: rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal
       - name: Check release versions
         run: |
+          if [[ "$GITHUB_REF" != refs/heads/main ]]; then
+            echo "::error::Manual releases must run from main."
+            exit 1
+          fi
           cargo metadata --no-deps --format-version 1 --locked |
-            jq --exit-status --arg tag "$GITHUB_REF_NAME" \
+            jq --exit-status --arg tag "$RELEASE_TAG" \
               '.packages | all("v" + .version == $tag)'
       - name: Check packages
         run: cargo publish --workspace --locked --dry-run
+      - name: Create release tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"; then
+            if [[ "$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")" != "$GITHUB_SHA" ]]; then
+              echo "::error::Tag $RELEASE_TAG points to a different commit."
+              exit 1
+            fi
+          else
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
+              -f "ref=refs/tags/$RELEASE_TAG" \
+              -f "sha=$GITHUB_SHA"
+          fi
       - name: Authenticate with crates.io
         uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5
         id: auth
