@@ -5,11 +5,11 @@
 
 Requires Rust 1.95.0 or later.
 
-Install from Git:
+Install from crates.io:
 
 ```toml
 [dependencies]
-queries-rusqlite = { git = "https://github.com/woodruffw-bot/queries-rusqlite" }
+queries-rusqlite = "0.2"
 rusqlite = { version = "0.40.2", default-features = false }
 ```
 

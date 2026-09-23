@@ -1,10 +1,10 @@
 [package]
 name = "queries-rusqlite"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.95"
 description = "Declare SQLite queries as Rust methods"
-repository = "https://github.com/woodruffw-bot/queries-rusqlite"
+repository = "https://github.com/woodruffw-trough/queries-rusqlite"
 license = "BSD-3-Clause"
 readme = "../../README.md"
 
