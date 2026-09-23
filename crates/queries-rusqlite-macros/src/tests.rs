@@ -232,6 +232,15 @@ fn invalid_query_signatures() {
     ] {
         query_error(input, "synchronous declarations");
     }
+    query_error(
+        quote!(
+            trait Invalid {
+                #[query = "SELECT 1"]
+                safe fn bad();
+            }
+        ),
+        "expected",
+    );
     for name in [
         "from_conn",
         "from_conn_mut",
