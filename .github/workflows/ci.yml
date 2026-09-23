@@ -34,6 +34,9 @@ jobs:
       - run: cargo test --workspace --all-targets --locked
       - run: cargo test --workspace --doc --locked
       - run: cargo doc --workspace --no-deps --locked
+      - name: Check packages
+        if: matrix.rust == 'stable'
+        run: cargo publish --workspace --locked --dry-run
 
   coverage:
     name: Coverage
