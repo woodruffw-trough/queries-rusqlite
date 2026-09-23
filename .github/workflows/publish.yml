@@ -1,8 +1,6 @@
 name: Publish
 
 on:
-  push:
-    tags: ["v*"]
   workflow_dispatch:
     inputs:
       tag:
@@ -24,11 +22,11 @@ jobs:
       name: crates-io
       url: https://crates.io/crates/queries-rusqlite
     permissions:
-      contents: write # Create release tags for manual runs.
+      contents: write # Create release tags.
       id-token: write # Authenticate with crates.io.
     env:
       RUSTUP_TOOLCHAIN: "1.95.0"
-      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+      RELEASE_TAG: ${{ inputs.tag }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -40,7 +38,7 @@ jobs:
       - run: rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal
       - name: Check release versions
         run: |
-          if [[ "$GITHUB_EVENT_NAME" == workflow_dispatch && "$GITHUB_REF" != refs/heads/main ]]; then
+          if [[ "$GITHUB_REF" != refs/heads/main ]]; then
             echo "::error::Manual releases must run from main."
             exit 1
           fi
@@ -50,7 +48,6 @@ jobs:
       - name: Check packages
         run: cargo publish --workspace --locked --dry-run
       - name: Create release tag
-        if: github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
